@@ -36,7 +36,15 @@ RUN set -ex \
 
 FROM $ARCH/alpine:3.16
 
+
 COPY --from=build-container /go/bin /bin
+
+# Generate self-signed TLS certificates for btcwallet
+RUN mkdir -p /root/.btcd/walletcerts
+RUN gencerts --host=btcwallet --directory=/root/.btcd/walletcerts
+
+# Check that certs are generated
+RUN test -d /root/.btcd/walletcerts
 
 VOLUME ["/root/.btcd"]
 
